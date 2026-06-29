@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard | College Event Management System{% endblock %}
+{% block content %}
+<div class="section-title">
+  <h2>My Student Dashboard</h2>
+  <a class="btn btn-outline" href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+<p style="color: #6f5f58; margin-bottom: 16px;"><strong>Welcome, {{ user.name }}</strong></p>
+
+<div class="metric-grid">
+  <div class="metric-card">
+    <h4>Registered Events</h4>
+    <div class="value">3</div>
+  </div>
+  <div class="metric-card">
+    <h4>Completed Events</h4>
+    <div class="value">1</div>
+  </div>
+  <div class="metric-card">
+    <h4>Certificates Ready</h4>
+    <div class="value">2</div>
+  </div>
+</div>
+
+<div class="card-grid" style="margin-top: 20px;">
+  {% for event in events %}
+  <article class="card">
+    <span class="pill">{{ event.category }}</span>
+    <h3>{{ event.name }}</h3>
+    <p>{{ event.description }}</p>
+    <ul class="meta-list">
+      <li>📅 {{ event.date }}</li>
+      <li>🟢 Registered</li>
+    </ul>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

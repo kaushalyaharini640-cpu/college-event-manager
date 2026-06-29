@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login | College Events</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #FAF9F6 0%, #f5f3f0 100%);
+        }
+
+        .auth-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(174, 198, 207, 0.2);
+        }
+
+        .auth-card h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            text-align: center;
+            color: #2D3436;
+            font-weight: 700;
+        }
+
+        .auth-card p {
+            text-align: center;
+            color: #636e72;
+            margin-bottom: 28px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2D3436;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #DDD;
+            border-radius: 8px;
+            background: #FAF9F6;
+            font-size: 1rem;
+            color: #2D3436;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #AEC6CF;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 12px rgba(174, 198, 207, 0.25);
+        }
+
+        .form-group input.error {
+            border-color: #FF6B6B;
+            background-color: #FFF5F5;
+        }
+
+        .form-group input.success {
+            border-color: #51CF66;
+            background-color: #F1FCE4;
+        }
+
+        .validation-icon {
+            position: absolute;
+            right: 14px;
+            top: 38px;
+            font-size: 18px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-message {
+            color: #FF6B6B;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            font-weight: 500;
+        }
+
+        .password-strength {
+            height: 4px;
+            background-color: #E8E8E8;
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak {
+            background-color: #FF6B6B;
+            width: 33%;
+        }
+
+        .password-strength-bar.medium {
+            background-color: #FFB84D;
+            width: 66%;
+        }
+
+        .password-strength-bar.strong {
+            background-color: #51CF66;
+            width: 100%;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: #636e72;
+            margin-top: 6px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .form-hint.strong {
+            color: #51CF66;
+            font-weight: 600;
+        }
+
+        .form-hint.medium {
+            color: #FFB84D;
+            font-weight: 600;
+        }
+
+        .form-hint.weak {
+            color: #FF6B6B;
+            font-weight: 600;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 38px;
+            cursor: pointer;
+            user-select: none;
+            color: #636e72;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password:hover {
+            color: #2D3436;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 13px;
+            color: #FFFFFF;
+            background-color: #AEC6CF;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn:hover:not(.loading) {
+            background-color: #9ab4bd;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(174, 198, 207, 0.35);
+        }
+
+        .auth-btn:active:not(.loading) {
+            transform: translateY(0);
+        }
+
+        .auth-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            border-top-color: #FFFFFF;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        .footer-text {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+
+        .footer-text a {
+            color: #2D3436;
+            font-weight: 600;
+            border-bottom: 2px solid #AEC6CF;
+            transition: all 0.2s ease;
+        }
+
+        .footer-text a:hover {
+            color: #AEC6CF;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 30px 20px;
+            }
+
+            .auth-card h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <p>Log in to view and register for events.</p>
+
+            <form action="/login" method="POST" id="loginForm">
+                <div class="form-group">
+                    <label>College Email</label>
+                    <input type="email" id="emailInput" name="email" required placeholder="student@college.edu">
+                    <span class="validation-icon" id="emailIcon"></span>
+                    <div class="error-message" id="emailError"></div>
+                    <div class="form-hint" id="emailHint">Use your college email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="passwordInput" name="password" required placeholder="••••••••">
+                    <span class="toggle-password" id="togglePassword">👁️</span>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="form-hint" id="passwordHint">Password must be at least 6 characters</div>
+                </div>
+
+                <button type="submit" class="auth-btn" id="submitBtn">Log In</button>
+            </form>
+
+            <div class="footer-text">
+                New here? <a href="/register">Create an account</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const emailIcon = document.getElementById('emailIcon');
+        const emailError = document.getElementById('emailError');
+        const passwordHint = document.getElementById('passwordHint');
+        const strengthBar = document.getElementById('strengthBar');
+        const togglePassword = document.getElementById('togglePassword');
+        const submitBtn = document.getElementById('submitBtn');
+        const loginForm = document.getElementById('loginForm');
+
+        // Email validation
+        emailInput.addEventListener('blur', () => {
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email === '') {
+                emailIcon.textContent = '';
+                emailError.style.display = 'none';
+                emailInput.classList.remove('error', 'success');
+            } else if (emailRegex.test(email)) {
+                emailIcon.textContent = '✓';
+                emailIcon.style.color = '#51CF66';
+                emailError.style.display = 'none';
+                emailInput.classList.remove('error');
+                emailInput.classList.add('success');
+            } else {
+                emailIcon.textContent = '✗';
+                emailIcon.style.color = '#FF6B6B';
+                emailError.textContent = 'Please enter a valid email address';
+                emailError.style.display = 'block';
+                emailInput.classList.remove('success');
+                emailInput.classList.add('error');
+            }
+        });
+
+        emailInput.addEventListener('focus', () => {
+            document.getElementById('emailHint').style.display = 'block';
+        });
+
+        emailInput.addEventListener('blur', () => {
+            if (emailInput.value.trim() === '') {
+                document.getElementById('emailHint').style.display = 'none';
+            }
+        });
+
+        // Password strength indicator
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            
+            if (password.length === 0) {
+                strengthBar.className = 'password-strength-bar';
+                passwordHint.style.display = 'none';
+                passwordHint.className = 'form-hint';
+            } else {
+                let strength = 'weak';
+                if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+                    strength = 'strong';
+                } else if (password.length >= 6) {
+                    strength = 'medium';
+                }
+                
+                strengthBar.className = `password-strength-bar ${strength}`;
+                passwordHint.style.display = 'block';
+                passwordHint.textContent = `Strength: ${strength.charAt(0).toUpperCase() + strength.slice(1)}`;
+                passwordHint.className = `form-hint ${strength}`;
+            }
+        });
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', (e) => {
+            e.preventDefault();
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Validate both fields
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address');
+                emailInput.classList.add('error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                passwordInput.classList.add('error');
+                return;
+            }
+            
+            // Submit form with loading animation
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<span class="spinner"></span>Logging in...';
+            
+            setTimeout(() => {
+                loginForm.submit();
+            }, 500);
+        });
+
+        function showError(message) {
+            emailError.textContent = message;
+            emailError.style.display = 'block';
+            setTimeout(() => {
+                emailError.style.display = 'none';
+            }, 3000);
+        }
+
+        // Enter key support
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Remove error class on input
+        emailInput.addEventListener('input', () => {
+            emailInput.classList.remove('error');
+        });
+
+        passwordInput.addEventListener('input', () => {
+            passwordInput.classList.remove('error');
+        });
+    </script>
+</body>
+</html>

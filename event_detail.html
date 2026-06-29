@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.name }} | College Event Management System{% endblock %}
+{% block content %}
+<div class="layout-grid">
+  <div class="panel">
+    <h2>{{ event.name }}</h2>
+    <p>{{ event.description }}</p>
+    <ul class="meta-list">
+      <li><strong>Category:</strong> {{ event.category }}</li>
+      <li><strong>Date:</strong> {{ event.date }}</li>
+      <li><strong>Time:</strong> {{ event.time }}</li>
+      <li><strong>Venue:</strong> {{ event.venue }}</li>
+      <li><strong>Organizer:</strong> {{ event.organizer }}</li>
+    </ul>
+    <form action="{{ url_for('register_event_route', event_id=event.id) }}" method="post">
+      <button class="btn btn-primary" type="submit">Register for this Event</button>
+    </form>
+  </div>
+  <div class="panel">
+    <h3>What students can do</h3>
+    <ul class="clean-list">
+      <li>View event details</li>
+      <li>Register in one click</li>
+      <li>Track their participation</li>
+      <li>Download certificates after completion</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

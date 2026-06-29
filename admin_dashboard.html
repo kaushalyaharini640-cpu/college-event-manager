@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | College Event Management System{% endblock %}
+{% block content %}
+<div class="section-title">
+  <h2>Admin Overview</h2>
+  <a class="btn btn-outline" href="{{ url_for('logout') }}">Log Out</a>
+</div>
+
+<div class="metric-grid">
+  <div class="metric-card">
+    <h4>Total Events</h4>
+    <div class="value">{{ events|length }}</div>
+  </div>
+  <div class="metric-card">
+    <h4>Registrations</h4>
+    <div class="value">348</div>
+  </div>
+  <div class="metric-card">
+    <h4>Attendance Marked</h4>
+    <div class="value">92%</div>
+  </div>
+</div>
+
+<div class="layout-grid" style="margin-top: 20px;">
+  <div class="panel">
+    <h3>Manage Events</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Event</th><th>Category</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          <tr>
+            <td>{{ event.name }}</td>
+            <td>{{ event.category }}</td>
+            <td><span class="badge success">Published</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Quick Actions</h3>
+    <ul class="clean-list">
+      <li>Add new event</li>
+      <li>Approve student registrations</li>
+      <li>Upload certificates</li>
+      <li>Generate reports</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

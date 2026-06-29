@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Home | College Event Management System{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Pastel-powered college events, made simple.</h1>
+    <p>Showcase your college’s workshops, hackathons, seminars, cultural fests, and guest lectures in one polished portal that students and admin can use effortlessly.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="{{ url_for('register') }}">Create Student Account</a>
+      <a class="btn btn-secondary" href="{{ url_for('student_events') }}">Explore Events</a>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <h4>Upcoming Events</h4>
+        <div class="value">18</div>
+      </div>
+      <div class="stat-card">
+        <h4>Active Students</h4>
+        <div class="value">1.2k</div>
+      </div>
+      <div class="stat-card">
+        <h4>Certificates Issued</h4>
+        <div class="value">540+</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <h3>Why this project stands out</h3>
+    <ul class="clean-list">
+      <li>Clean student and admin modules</li>
+      <li>Event registration and certificate flow</li>
+      <li>Portfolio-ready UI with pastel colors</li>
+      <li>MongoDB-friendly structure for future scaling</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section-title">
+  <h2>Featured Events</h2>
+  <a class="btn btn-outline" href="{{ url_for('student_events') }}">View all</a>
+</section>
+<div class="card-grid">
+  {% for event in events %}
+  <article class="card">
+    <span class="pill">{{ event.category }}</span>
+    <h3>{{ event.name }}</h3>
+    <p>{{ event.description }}</p>
+    <ul class="meta-list">
+      <li>📅 {{ event.date }}</li>
+      <li>📍 {{ event.venue }}</li>
+      <li>👩‍🏫 {{ event.organizer }}</li>
+    </ul>
+    <a class="btn btn-outline" href="{{ url_for('event_detail', event_id=event.id) }}">View Details</a>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}
